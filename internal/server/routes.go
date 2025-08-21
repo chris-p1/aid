@@ -6,12 +6,6 @@ import (
 	"net/http"
 )
 
-type TestRes struct {
-	Data    interface{}
-	Success bool
-	Message string
-}
-
 func (s *Server) RegisterRoutes() http.Handler {
 	mux := http.NewServeMux()
 

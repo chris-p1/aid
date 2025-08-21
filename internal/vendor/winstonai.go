@@ -22,9 +22,6 @@ type service struct {
 	apiKey  string
 }
 
-type Response struct {
-}
-
 var (
 	baseUrl = os.Getenv("WINSTON_API_URL")
 	apiKey  = os.Getenv("WINSTON_API_KEY")
@@ -59,7 +56,6 @@ func (s service) DetectAiFromText(r *http.Request) (map[string]interface{}, erro
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", bearer)
 
-	// Execute second request
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return nil, fmt.Errorf("failed to make request: %w", err)
