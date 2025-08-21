@@ -6,11 +6,20 @@ import (
 	"net/http"
 )
 
+type TestRes struct {
+	Data    interface{}
+	Success bool
+	Message string
+}
+
 func (s *Server) RegisterRoutes() http.Handler {
 	mux := http.NewServeMux()
 
 	// Register routes
 	mux.HandleFunc("/", s.HelloWorldHandler)
+	mux.HandleFunc("/v1/ai/evaltext", s.aiTextDetectionHandler)
+	mux.HandleFunc("/v1/ai/test", s.testGetEndpointHandler)
+	mux.HandleFunc("/v1/ai/post", s.testPostEndpointHandler)
 
 	// Wrap the mux with CORS middleware
 	return s.corsMiddleware(mux)
@@ -49,5 +58,64 @@ func (s *Server) HelloWorldHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) aiTextDetectionHandler(w http.ResponseWriter, r *http.Request) {
+	resp, err := s.aiService.DetectAiFromText(r)
+	if err != nil {
+		log.Printf("Failed to get response: %v", err)
+	}
+	jsonResp, err := json.Marshal(resp)
+	if err != nil {
+		http.Error(w, "Failed to marshal response", http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	if _, err := w.Write(jsonResp); err != nil {
+		log.Printf("Failed to write response: %v", err)
+	}
+
+}
+
+func (s *Server) testGetEndpointHandler(w http.ResponseWriter, r *http.Request) {
+	resp, err := s.aiService.TestGetEndpoint(r)
+	if err != nil {
+		log.Printf("Failed to get response: %v", err)
+	}
+
+	// var data TestRes
+	// err = json.NewDecoder(resp.Body).Decode(&data)
+
+	// fmt.Println(data)
+	jsonResp, err := json.Marshal(resp)
+	if err != nil {
+		http.Error(w, "Failed to marshal response", http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	// json.NewEncoder(w).Encode(data)
+	if _, err := w.Write(jsonResp); err != nil {
+		log.Printf("Failed to write response: %v", err)
+	}
+
+}
+
+func (s *Server) testPostEndpointHandler(w http.ResponseWriter, r *http.Request) {
+	resp, err := s.aiService.TestPostEndpoint(r)
+	if err != nil {
+		log.Printf("Failed to get response: %v", err)
+	}
+
+	// var data TestRes
+	// err = json.NewDecoder(resp.Body).Decode(&data)
+
+	// fmt.Println(data)
+	jsonResp, err := json.Marshal(resp)
+	if err != nil {
+		http.Error(w, "Failed to marshal response", http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	// json.NewEncoder(w).Encode(data)
+	if _, err := w.Write(jsonResp); err != nil {
+		log.Printf("Failed to write response: %v", err)
+	}
 
 }

@@ -1,6 +1,7 @@
 package server
 
 import (
+	"aid/internal/vendor"
 	"fmt"
 	"net/http"
 	"os"
@@ -11,14 +12,15 @@ import (
 )
 
 type Server struct {
-	port int
+	port      int
+	aiService vendor.Service
 }
 
 func NewServer() *http.Server {
 	port, _ := strconv.Atoi(os.Getenv("PORT"))
 	NewServer := &Server{
-		port: port,
-		// api:  api.New(),
+		port:      port,
+		aiService: vendor.New(),
 	}
 
 	// Declare Server config
