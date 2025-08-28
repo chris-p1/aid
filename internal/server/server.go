@@ -1,26 +1,32 @@
 package server
 
 import (
-	"aid/internal/vendor"
+	"aid/internal/service"
 	"fmt"
 	"net/http"
-	"os"
-	"strconv"
 	"time"
 
 	_ "github.com/joho/godotenv/autoload"
 )
 
 type Server struct {
-	port      int
-	aiService vendor.Service
+	port    int
+	winston service.WinstonAPI
+	tester  service.TestAPI
 }
 
 func NewServer() *http.Server {
-	port, _ := strconv.Atoi(os.Getenv("PORT"))
+
+	conf := GetConfig()
 	NewServer := &Server{
-		port:      port,
-		aiService: vendor.New(),
+		port: conf.Port,
+		winston: service.WinstonAPI{
+			BaseUrl: conf.WinstonBaseUrl,
+			ApiKey:  conf.WinstonApiKey,
+		},
+		tester: service.TestAPI{
+			BaseUrl: "https://jsonplaceholder.typicode.com",
+		},
 	}
 
 	// Declare Server config
