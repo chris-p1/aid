@@ -1,0 +1,39 @@
+---
+{
+    apiVersion: "apps/v1",
+    kind: "Deployment",
+    metadata: {
+      name: "{{ .Values.image.repository }}"
+    },
+    spec: {
+      replicas: "{{ .Values.replicaCount }}",
+      selector: {
+        matchLabels: {
+          app: "aid",
+        },
+      },
+      template: {
+        metadata: {
+          labels: {
+            app: "aid",
+          },
+        },
+      },
+      spec: {
+          containers: [{
+              name: "aid",
+              image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}",
+              resources: {
+                  limits: {
+                      memory: "{{ .Values.resources.limits.memory }}",
+                      cpu: "{{ .Values.resources.limits.cpu }}",
+                      },
+                  requests: {
+                      memory: "{{ .Values.resources.requests.memory }}",
+                      cpu: "{{ .Values.resources.requests.cpu }}",
+                  },
+              },
+         }],
+      },
+    },
+}

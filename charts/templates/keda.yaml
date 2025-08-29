@@ -1,0 +1,33 @@
+{{ if .Values.autoscaling.enabled }}
+---
+{
+  apiVersion: "keda.sh/v1alpha1",
+  kind: "ScaledObject",
+  metadata: {
+    name: "{{ include `aid.name` . }}",
+    labels: {
+      app: "{{ include `aid.name` . }}",
+      stack: "{{ .Values.stack }}",
+    },
+  },
+  spec: {
+    minReplicaCount: {{ .Values.autoscaling.minReplicas }},
+    maxReplicaCount: {{ .Values.autoscaling.maxReplicas }},
+    scaleTargetRef: {
+      name: "{{ include `aid.name` . }}",
+    },
+    triggers: [{
+      type: "memory",
+      metadata: {
+        type: "{{ .Values.autoscaling.triggers.memory.type }}",
+        value: "{{ .Values.autoscaling.triggers.memory.value }}",
+      }}, {
+      type: "cpu",
+      metadata: {
+        type: "{{ .Values.autoscaling.triggers.cpu.type }}",
+        value: "{{ .Values.autoscaling.triggers.cpu.value }}",
+      },
+    }],
+  },        
+}        
+{{ end }}

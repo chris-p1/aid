@@ -1,0 +1,9 @@
+---
+{
+    apiVersion: "v2",
+    name: "aid",
+    description: "An AI detection microservice",
+    type: "application",
+    version: "0.1.0",
+    appVersion: "1.0.0",
+}
